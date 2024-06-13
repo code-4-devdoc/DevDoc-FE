@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {useParams} from "react-router-dom";
 import './ResumePage.css'
 import ResumeNav from "../../components/ResumeCommon/ResumeNav";
 import styled from "styled-components";
@@ -59,9 +60,10 @@ const ResumeTitle = styled.input`
     border-style: solid;
 `
 
-const ResumePage = () => {
+function ResumePage({ baseUrl }) {
+    const { resumeId } = useParams();
 
-    // activeSections 배열: CategoryList 컴포넌트에서 활성화한 섹션들의 이름 저장
+    // activeSections 배열: CategoryList 컴포넌트에서 활성화한 섹션들의 이름 저장 - 일단빼볼게요
     const [activeSections, setActiveSections] = useState([]);
 
     // sections 배열: CategoryList 컴포넌트에서 전달 받은 현재 열려 있는 섹션들의 이름 배열
@@ -74,6 +76,25 @@ const ResumePage = () => {
 
     const handleTitleChange = (event) => {
         setResumeTitle(event.target.value);
+    };
+
+    // 이력서 저장 API-TEST
+    const handleSave = async () => {
+        const response = await fetch(`${baseUrl}/api/resumes/${resumeId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: resumeTitle,
+            }),
+        });
+
+        if (response.ok) {
+            alert("이력서가 성공적으로 저장되었습니다.");
+        } else {
+            alert("이력서 저장에 실패했습니다.");
+        }
     };
 
     return (
@@ -94,7 +115,7 @@ const ResumePage = () => {
                 <div className="form-container">
                     <div style={{marginTop: 25, marginRight: 25, display:"flex", justifyContent:'end', gap: 10}}>
                         <Button>미리보기</Button>
-                        <Button>저장</Button>
+                        <Button onClick={handleSave}>저장</Button>
                     </div>
                     <div style={{display:'flex', justifyContent:'center', marginTop: 30, marginBottom:10}}>
                         <ResumeTitle type="text" vaue={resumeTitle} onChange={handleTitleChange} placeholder="이력서 제목 (저장용)"/>
