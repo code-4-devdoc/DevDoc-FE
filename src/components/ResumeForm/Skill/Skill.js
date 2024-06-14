@@ -45,7 +45,7 @@ const Skill = () => {
 
     const updateMainSkillContent = (index, newValue) => {
         setMainSkills(prev => prev.map((skill, idx) =>
-            idx === index ? { ...skill, content: newValue } : skill
+            idx === index ? { ...skill, content: newValue === "null" ? null : newValue } : skill
         ));
     };
 

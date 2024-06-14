@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 import './ResumePage.css'
 import ResumeNav from "../../components/ResumeCommon/ResumeNav";
 import styled from "styled-components";
@@ -61,6 +62,8 @@ const ResumeTitle = styled.input`
 `
 
 function ResumePage({ baseUrl }) {
+    const navigate = useNavigate();
+    const { resumeId } = useParams();
     const [activeSections, setActiveSections] = useState([]);
     const [resumeTitle, setResumeTitle] = useState("");
     const { skills } = useContext(SkillContext);
@@ -95,9 +98,11 @@ function ResumePage({ baseUrl }) {
         )
         .then(responses => {
             console.log("Skills updated successfully", responses);
+            alert("Skills updated successfully");
         })
         .catch(error => {
             console.error("Error updating skills:", error);
+            alert("Error updating skills");
         });
     };
 
@@ -118,7 +123,7 @@ function ResumePage({ baseUrl }) {
                 </div>
                 <div className="form-container">
                     <div style={{marginTop: 25, marginRight: 25, display:"flex", justifyContent:'end', gap: 10}}>
-                        <Button>미리보기</Button>
+                        <Button onClick={() => navigate(`/resumes/${resumeId}/preview`)}>미리보기</Button>
                         <Button onClick={handleSave}>저장</Button>
                     </div>
                     <div style={{display:'flex', justifyContent:'center', marginTop: 30, marginBottom:10}}>
