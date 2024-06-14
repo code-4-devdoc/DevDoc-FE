@@ -82,11 +82,11 @@ function ResumePage({ baseUrl }) {
         onUpdateSkills(skills);
     };
 
-    const onUpdateSkills = (updatedSkills) => {
-        console.log("Updating skills:", updatedSkills);
+    const onUpdateSkills = (updateSkills) => {
+        console.log("Updating skills:", updateSkills);
 
         Promise.all(
-            updatedSkills.map(skill => {
+            updateSkills.map(skill => {
                 return fetch(`${baseUrl}/api/resumes/${skill.id}/skills`, {
                     method: 'PUT',
                     headers: {
