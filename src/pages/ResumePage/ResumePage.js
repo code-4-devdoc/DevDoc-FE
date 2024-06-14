@@ -1,10 +1,10 @@
-import React, {useState} from "react";
-import {useParams} from "react-router-dom";
+import React, { useState, useContext } from "react";
 import './ResumePage.css'
 import ResumeNav from "../../components/ResumeCommon/ResumeNav";
 import styled from "styled-components";
 import CategoryList from "../../components/ResumeCategory/CategoryList";
 import FormContent from "../../components/ResumeForm/FormContent";
+import { SkillContext } from "../../contexts/SkillContext";
 
 const CategoryContainer = styled.div`
     margin-left: 20px;
@@ -61,40 +61,44 @@ const ResumeTitle = styled.input`
 `
 
 function ResumePage({ baseUrl }) {
-    const { resumeId } = useParams();
-
-    // activeSections 배열: CategoryList 컴포넌트에서 활성화한 섹션들의 이름 저장 - 일단빼볼게요
     const [activeSections, setActiveSections] = useState([]);
+    const [resumeTitle, setResumeTitle] = useState("");
+    const { skills } = useContext(SkillContext);
 
     // sections 배열: CategoryList 컴포넌트에서 전달 받은 현재 열려 있는 섹션들의 이름 배열
     const handleSectionChange = (sections) => {
         setActiveSections(sections); // activeSections 상태를 업데이트
     };
 
-    // 이력서 제목 입력
-    const [resumeTitle, setResumeTitle] = useState("");
-
     const handleTitleChange = (event) => {
         setResumeTitle(event.target.value);
     };
 
-    // 이력서 저장 API-TEST
-    const handleSave = async () => {
-        const response = await fetch(`${baseUrl}/api/resumes/${resumeId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                title: resumeTitle,
-            }),
-        });
+    // 이력서 저장 API 호출
+    const handleSave = () => {
+        onUpdateSkills(skills);
+    };
 
-        if (response.ok) {
-            alert("이력서가 성공적으로 저장되었습니다.");
-        } else {
-            alert("이력서 저장에 실패했습니다.");
-        }
+    const onUpdateSkills = (updatedSkills) => {
+        console.log("Updating skills:", updatedSkills);
+
+        Promise.all(
+            updatedSkills.map(skill => {
+                return fetch(`${baseUrl}/api/resumes/${skill.id}/skills`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(skill.content)
+                });
+            })
+        )
+        .then(responses => {
+            console.log("Skills updated successfully", responses);
+        })
+        .catch(error => {
+            console.error("Error updating skills:", error);
+        });
     };
 
     return (

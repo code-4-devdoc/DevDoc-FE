@@ -29,34 +29,41 @@ const Button = styled.button`
 `;
 
 
-const MainSkill = ({onRemove}) => {
+const MainSkill = ({ onRemove, onChangeContent }) => {
     const [isActive, setIsActive] = useState(false);
     const [value, setValue] = useState("");
 
     const toggleActive = () => {
         setIsActive(prev => !prev);
         if (isActive) {
-            setValue(""); // 비활성화 시 텍스트 초기화
+            setValue("");           // 비활성화 시 텍스트 초기화
+            onChangeContent("");    // 비활성화 시 Content 초기화
         }
+    };
+
+    const handleChange = (e) => {
+        const newValue = e.target.value;
+        setValue(newValue);             // MainSkill 내에서 value 상태 업데이트
+        onChangeContent(newValue);      // Skill 컴포넌트로 value 상태 업데이트 신호 전달
     };
 
     return (
         <Border>
-            <div style={{display:"flex", justifyContent:"flex-end"}}>
-                <button style={{cursor:"pointer", borderRadius: "0px 8px 0px 3px", width: 30, height:20, backgroundColor:"rgba(18, 73, 156, 50%)", color: "white", border:"none"}} onClick={onRemove}>-</button>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button style={{ cursor: "pointer", borderRadius: "0px 8px 0px 3px", width: 30, height: 20, backgroundColor: "rgba(18, 73, 156, 50%)", color: "white", border: "none" }} onClick={onRemove}>-</button>
             </div>
-            <div style={{height: 5}}></div>
-            <span style={{fontWeight: 600, marginLeft: 40}}>주요 기술</span>
-            <div style={{display: "flex", alignItems: 'center', gap: 15, paddingLeft: 15, paddingRight: 15, marginBottom: 5}}>
+            <div style={{ height: 5 }}></div>
+            <span style={{ fontWeight: 600, marginLeft: 40 }}>주요 기술</span>
+            <div style={{ display: "flex", alignItems: 'center', gap: 15, paddingLeft: 15, paddingRight: 15, marginBottom: 5 }}>
                 <SkillSearchComponent singleSelection={true}></SkillSearchComponent>
                 <Input as="textarea"
                        style={{width: 500, height: 60, fontFamily: "inherit"}}
                        placeholder="부연 설명을 입력하세요."
                        disabled={!isActive}
                        value={value}
-                       onChange={e => setValue(e.target.value)}
+                       onChange={handleChange}
                 />
-                <Button style={{marginTop: 35, marginLeft: -15}} onClick={toggleActive} active={isActive}>
+                <Button style={{ marginTop: 35, marginLeft: -15 }} onClick={toggleActive} active={isActive}>
                     {isActive ? '-' : '+'}
                 </Button>
             </div>

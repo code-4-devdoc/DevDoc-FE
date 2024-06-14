@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ResumeList({ baseUrl }) {
   const [resumes, setResumes] = useState([]);
+  const [newTitle, setNewTitle] = useState('');
   const navigate = useNavigate();
 
   // Resume 목록 조회 & 새로고침
@@ -13,7 +14,11 @@ function ResumeList({ baseUrl }) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setResumes(data);
+      const formattedResumes = data.map(resume => ({
+        id: resume.id,
+        title: resume.title             // ID 와 Title 추출
+      }));
+      setResumes(formattedResumes);
     } catch (error) {
       console.error('Failed to fetch resumes', error);
     }
@@ -23,25 +28,30 @@ function ResumeList({ baseUrl }) {
     fetchResumes();
   }, [fetchResumes]);
 
-  // Resume 테이블 생성
+  // Resume 생성
   const createResume = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}/api/resumes`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTitle), // Title을 JSON 형식으로 전송
       });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       fetchResumes();
+      setNewTitle(''); // Title 입력값 초기화
     } catch (error) {
       console.error('Failed to create resume', error);
     }
-  }, [baseUrl, fetchResumes]);
+  }, [baseUrl, fetchResumes, newTitle]);
 
-  // Resume 테이블 삭제
-  const deleteResume = useCallback(async (id) => {
+  // Resume 삭제
+  const deleteResume = useCallback(async (resumeId) => {
     try {
-      const response = await fetch(`${baseUrl}/api/resumes/${id}`, {
+      const response = await fetch(`${baseUrl}/api/resumes/${resumeId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -56,11 +66,20 @@ function ResumeList({ baseUrl }) {
   return (
     <div style={{ textAlign: 'center', marginTop: '2rem' }}>
       <h2>Resume List</h2>
-      <button onClick={createResume} style={{ fontSize: '2rem', padding: '1rem' }}>+</button>
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Enter title"
+          value={newTitle}
+          onChange={(e) => setNewTitle(e.target.value)}
+          style={{ fontSize: '1rem', padding: '0.5rem' }}
+        />
+        <button onClick={createResume} style={{ fontSize: '1rem', padding: '0.5rem' }}>+</button>
+      </div>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {resumes.map(resume => (
           <li key={resume.id} style={{ marginTop: '1rem' }}>
-            <button onClick={() => navigate(`/resumes/${resume.id}`)}>{`Resume ${resume.id}`}</button>
+            <button onClick={() => navigate(`/resumes/${resume.id}`)}>{`이력서 ${resume.id}. ${resume.title}`}</button>
             <button onClick={() => deleteResume(resume.id)}>X</button>
           </li>
         ))}

@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
+import { SkillProvider } from './contexts/SkillContext';
 
 // 환경변수를 사용해 개발환경(localhost) or 배포환경(krampoline) 구분
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -11,7 +12,9 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <App baseUrl={BASE_URL} />
+    <SkillProvider>
+      <App baseUrl={BASE_URL} />
+    </SkillProvider>
   </BrowserRouter>
 );
 
