@@ -2,11 +2,11 @@ import './App.css';
 import {Route, Routes} from "react-router-dom";
 import Index from "./pages/ResumePage/ResumePage"
 
-function App() {
+function App({ baseUrl }) {
   return (
     <div>
       <Routes>
-        <Route path="/" element={ <Index /> }/>
+      <Route exact path="/" element={ <Index baseUrl={baseUrl} /> }/>
       </Routes>
     </div>
   );

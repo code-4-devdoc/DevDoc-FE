@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+# 전체 개요  
+## https://github.com/code-4-devdoc/DevDoc  
+## https://github.com/code-4-devdoc/DevDoc-FE  
+## https://github.com/code-4-devdoc/DevDoc-BE  
+<br/>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+# 메모
+## H2-Console
+#### http://localhost:8080/h2-console  
+- JDBC URL : jdbc:h2:mem:testdb  
+- UserName : root  
+- Password : root
+<br/>
 
-In the project directory, you can run:
+---
 
-### `npm start`
+# 코드리뷰
+> https://github.com/code-4-devdoc/devdoc-front-resume-0607
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+> 마지막 커밋 기준 : add frontend component - Projects, Training, Activities, Awards, Cert…
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+> for Deploy 커밋 : 배포 관련 파일 및 개발환경 셋팅
+<br/>
 
-### `npm test`
+> 1:N Table Test 커밋 : 
+<br/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+`index.js`: Skill Context 추가  
+`Apps.js`: 라우팅주소 변경 & baseUrl(API주소) 전달  
+`SkillContext.js`: ResumePage-Skill 사이 데이터 전달용 리액트 API  
+`ResumeList.js`: Resume 생성 & 삭제 & /resumeId 라우팅 연결  
+`ResumePage.js`: 저장버튼에 Skill 항목들 각각 /skillId/skills 로 API 요청 연결  
+`Skill.js`: Skill 항목 저장 (content만) ~ `SkillContext` ~ `ResumePage.js`에 전달  
+`MainSkill.js`: content 입력을 `Skill.js`에 전달  
+`ResumePreview.js`: 모든 테이블 (status : F 포함) / status : T 인 테이블만  
+<br/>
 
-### `npm run build`
+#### 입력폼-DB테이블 연결방법  
+1. 입력폼 컨테이너에 content 입력 (컨테이너의 id는 기본 배열의 0,1,2임)
+   <br/>
+   
+2. content 항목 입력받으면 mainSkills 배열에 저장 (useState로 추적)
+   <br/>
+   
+   : 컨테이너 2개 생성 후 ABC / DEF 입력 시 -> mainSkills = [{ id : 0, content : "ABC" }, { id : 1, content : "DEF" }, { id : 2, content :  "" }]
+   <br/>
+   
+3. 저장 버튼 클릭 시 `Skill.js`에서 updateSkills 배열 생성 ~ 초기화 ~ mainSkills의 content 복사
+   <br/>
+   
+   : Ex) resumeId = 4 -> skillId = 10 11 12
+   <br/>
+   
+   : updateSkills = [{ id : 10, content : null }, { id : 11, content : null }, { id : 12, content : null }] 초기화
+   <br/>
+   
+   : mainSkills의 content를 updateSkills의 content에 복사 (빈컨테이너의 content 값은 null임)
+   <br/>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+   : updateSkills = [{ id : 10, content : "ABC" }, { id : 11, content : "DEF" }, { id : 12, content : null }]
+   
+4. `ResumePage.js`에서 updateSkills 배열을 받아와서 각각 /skillId/skills 로 PUT 요청 보내기
