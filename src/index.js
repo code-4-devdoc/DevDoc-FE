@@ -8,13 +8,16 @@ import {EducationProvider} from "./contexts/EducationContext";
 import {AboutMeProvider} from "./contexts/AboutMeContext";
 import {AwardProvider} from "./contexts/AwardContext";
 
+// 환경변수를 사용해 개발환경(localhost) or 배포환경(krampoline) 구분
+const BASE_URL = process.env.REACT_APP_API_URL;
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
       <EducationProvider>
           <AboutMeProvider>
               <AwardProvider>
-                  <App />
+                <App baseUrl={BASE_URL} />
               </AwardProvider>
           </AboutMeProvider>
       </EducationProvider>
